@@ -145,38 +145,46 @@ class Game:
             return False
 
 
-go = True
-ns = {pg.K_0: 0, pg.K_1: 1, pg.K_2: 2, pg.K_3: 3, pg.K_4: 4, pg.K_5: 5, pg.K_6: 6}
-text1 = "1: human vs human  2: human vs robot"
-text2 = "3: robot vs human  4: robot vs robot"
+play = True
+pg_nr_dict = {
+    pg.K_0: 0,
+    pg.K_1: 1,
+    pg.K_2: 2,
+    pg.K_3: 3,
+    pg.K_4: 4,
+    pg.K_5: 5,
+    pg.K_6: 6,
+}
+start_text1 = "1: human vs human  2: human vs robot"
+start_text2 = "3: robot vs human  4: robot vs robot"
 clock = pg.time.Clock()
 pg.init()
 pg.display.set_caption("Four in a row")
 screen = pg.display.set_mode((SQ * C, SQ * (R + 1)))
 stage = 1
-while go:
+while play:
     clock.tick(40)
     screen.fill((0, 0, 0))
     if stage == 2:
-        wc = g1.winc()
-        if wc:
+        win_tf = g1.winc()
+        if win_tf:
             stage = 3
         else:
             g1.move1()
     for e in pg.event.get():
         if e.type == pg.QUIT:
-            go = False
-        if e.type == pg.KEYDOWN and e.key in ns:
-            a1 = ns[e.key]
-            if stage == 1 and ns[e.key] in range(1, 5):
-                g1 = Game(ns[e.key])
+            play = False
+        if e.type == pg.KEYDOWN and e.key in pg_nr_dict:
+            a1 = pg_nr_dict[e.key]
+            if stage == 1 and pg_nr_dict[e.key] in range(1, 5):
+                g1 = Game(pg_nr_dict[e.key])
                 stage = 2
             elif stage == 2:
-                g1.move1(ns[e.key])
+                g1.move1(pg_nr_dict[e.key])
             elif stage == 3:
-                if ns[e.key] == 0:
-                    go = False
-                elif ns[e.key] == 1:
+                if pg_nr_dict[e.key] == 0:
+                    play = False
+                elif pg_nr_dict[e.key] == 1:
                     stage = 1
         elif e.type == pg.MOUSEBUTTONDOWN and pg.mouse.get_pressed()[0]:
             if stage == 2:
@@ -204,14 +212,14 @@ while go:
                         SQ // 3,
                     )
     if stage == 1:
-        guide1 = pg.font.SysFont("Arial", 30).render(text1, False, (0, 255, 0))
+        guide1 = pg.font.SysFont("Arial", 30).render(start_text1, False, (0, 255, 0))
         screen.blit(guide1, (SQ // 4, SQ * R))
-        guide1 = pg.font.SysFont("Arial", 30).render(text2, False, (0, 255, 0))
+        guide1 = pg.font.SysFont("Arial", 30).render(start_text2, False, (0, 255, 0))
         screen.blit(guide1, (SQ // 4, SQ * R + SQ // 2))
     elif stage == 2:
         pass
     elif stage == 3:
-        guide1 = pg.font.SysFont("Arial", 30).render(wc, False, (0, 255, 0))
+        guide1 = pg.font.SysFont("Arial", 30).render(win_tf, False, (0, 255, 0))
         screen.blit(guide1, (SQ // 4, SQ * R))
         guide1 = pg.font.SysFont("Arial", 30).render("Again?(0/1)", False, (0, 255, 0))
         screen.blit(guide1, (SQ // 4, SQ * R + SQ // 2))
