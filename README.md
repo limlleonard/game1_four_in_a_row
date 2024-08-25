@@ -27,3 +27,5 @@ This is a classic puzzle game. Two players play pieces of two colors in turn. Th
 3. Have fun
 
 ## Behind the scene
+
+For the robot, I used Minimax algorithm.
