@@ -9,79 +9,80 @@ W = 4  # number to win
 SQ = 80  # size of a square
 
 
-def line1(l1, n=4, c=1):
-    """n: number in a line, c: color of the player"""
-    cnt = 0
+def count_windows(board, n=4, color=1):
+    """n: number in a line, c: color of the player. Count how many windows, which have n pieces of the selected color. A window indicate a row in horizontal, vertical or diagnol direction with a length of W=4"""
+    counter = 0
 
-    def cw(l4):  # check window
-        return (
-            list(l4).count(c) == n and list(l4).count(0) == W - n
-        )  # and the rest is empty
+    def cw(l4):
+        """Check window, if there are n pieces of the selected color in the window and the rest is empty"""
+        return list(l4).count(color) == n and list(l4).count(0) == W - n
 
     for k1 in range(R):  # win horizontal
         for k2 in range(C - W + 1):
-            if cw(l1[k1, k2 : k2 + W]):
-                cnt += 1
+            if cw(board[k1, k2 : k2 + W]):
+                counter += 1
     for k1 in range(R - W + 1):  # win vertical
         for k2 in range(C):
-            if cw(l1[k1 : k1 + W, k2]):
-                cnt += 1
+            if cw(board[k1 : k1 + W, k2]):
+                counter += 1
     for k1 in range(R - W + 1):  # diagnol
         for k2 in range(C - W + 1):
             lt1 = []  # list temp 1
             lt2 = []
             for k3 in range(W):
-                lt1.append(l1[k1 + k3, k2 + k3])
-                lt2.append(l1[k1 + W - k3 - 1, k2 + k3])
+                lt1.append(board[k1 + k3, k2 + k3])
+                lt2.append(board[k1 + W - k3 - 1, k2 + k3])
             if cw(lt1):
-                cnt += 1
+                counter += 1
             if cw(lt2):
-                cnt += 1
-    return cnt
+                counter += 1
+    return counter
 
 
-def moveb(l1, pos, c):
+def move1(board, pos, color):
+    """Drop a piece of the color to position, return true of false if the move is success (in case the column is already full). It checks from the bottom row, if it is empty, then places the piece where the first empty row appears"""
     for k1 in range(R):
-        if not l1[R - k1 - 1][pos]:
-            # check from the bottom row, if it is empty
-            l1[R - k1 - 1][pos] = c  # drop the piece to the bottom
-            return True  # move success
+        if not board[R - k1 - 1][pos]:
+            board[R - k1 - 1][pos] = color
+            return True
     return False
 
 
 class Robot:
     def __init__(self, c):
         self.c = c  # color
-        self.l1 = []
-        self.mp = []
+        # self.board = []
+        # self.mp = []
 
-    def score1(self, l1, i, c):
-        lt = l1.copy()
-        moveb(lt, i, c)
-        i4 = line1(lt, 4, c)  # i would get a 4
-        i3 = line1(lt, 3, c)
-        i2 = line1(lt, 2, c)
-        lt = l1.copy()
-        moveb(lt, i, c % 2 + 1)  # fantacy move by opponent
-        y4 = line1(lt, 4, c % 2 + 1)
-        y3 = line1(lt, 3, c % 2 + 1)
-        y2 = line1(lt, 2, c % 2 + 1)
+    def score1(self, board, i, c):
+        """Score is calculated by how many 4,3,2 pieces in a window."""
+        lt = board.copy()
+        move1(lt, i, c)
+        i4 = count_windows(lt, 4, c)  # i would get a 4
+        i3 = count_windows(lt, 3, c)
+        i2 = count_windows(lt, 2, c)
+        lt = board.copy()
+        move1(lt, i, c % 2 + 1)  # fantacy move by opponent
+        y4 = count_windows(lt, 4, c % 2 + 1)
+        y3 = count_windows(lt, 3, c % 2 + 1)
+        y2 = count_windows(lt, 2, c % 2 + 1)
         return i4 * 10**4 + y4 * 10**3 + i3 * 10**2 + y3 * 10 + i2 * 5 + y2 * 2
 
-    def scores(self, l1, c):
+    def scores(self, board, c) -> dict:
+        """Calculate the scores of all the poisitions and return them as a dictionary"""
         dict1 = {}
         for i in range(C):
-            if l1[0][i] == 0:
-                dict1[i] = self.score1(l1, i, c)
+            if board[0][i] == 0:
+                dict1[i] = self.score1(board, i, c)
         return dict1
 
-    def mover(self, l1, _=0):  # move random
-        # it takes a parameter it doesn't need, because human mover need this parameter
-        dict1 = self.scores(l1.copy(), self.c)
+    def move_both(self, board, _=0):
+        """the second parameter is not needed here, but human mover need this"""
+        dict1 = self.scores(board.copy(), self.c)
         print(dict1)
         for k in dict1:
-            l2 = l1.copy()
-            moveb(l2, k, self.c)  # make fantacy move myself, to calculate opponent
+            l2 = board.copy()
+            move1(l2, k, self.c)  # make fantacy move myself, to calculate opponent
             dict2 = self.scores(l2, self.c % 2 + 1)
             dict1[k] -= max(dict2.values()) // 2
         print(dict1)
@@ -94,12 +95,14 @@ class Human:
     def __init__(self, c):
         self.c = c
 
-    def mover(self, _, a1):  # human doesn't need the list
-        return a1  # just return the number you get
+    def move_both(self, _, a1):
+        """human doesn't need the board, it just return what he gets"""
+        return a1
 
 
 class Game:
     def __init__(self, a1):
+        """Game has two players, p1 and p2."""
         if a1 == 1:
             self.p1 = Human(1)
             self.p2 = Human(2)
@@ -112,34 +115,35 @@ class Game:
         elif a1 == 4:
             self.p1 = Robot(1)
             self.p2 = Robot(2)
-        self.l1 = np.zeros((R, C), dtype=int)
-        self.p1v = self.p2v = self.turn = True  # valid move
+        self.board = np.zeros((R, C), dtype=int)
+        self.valid_p1 = self.valid_p2 = self.turn = True  # valid move
 
-    def move1(self, a1=7):
+    def move_game(self, a1=7):
+        """Move controlled by game. If turn is true, p1 is in turn"""
         if self.turn:
-            mt = self.p1.mover(self.l1, a1)
+            mt = self.p1.move_both(self.board, a1)
             if mt in range(C):
-                self.p1v = moveb(self.l1, mt, self.p1.c)
+                self.valid_p1 = move1(self.board, mt, self.p1.c)
                 self.turn = not self.turn  # only switch, if make a valid move
         else:
-            mt = self.p2.mover(self.l1, a1)
+            mt = self.p2.move_both(self.board, a1)
             if mt in range(C):
-                self.p2v = moveb(self.l1, mt, self.p2.c)
+                self.valid_p2 = move1(self.board, mt, self.p2.c)
                 self.turn = not self.turn
 
     def winc(self):
-        r1 = line1(self.l1, W, 1)
-        r2 = line1(self.l1, W, 2)
+        r1 = count_windows(self.board, W, 1)
+        r2 = count_windows(self.board, W, 2)
         # time.sleep(1)
-        if r1 > 0 or not self.p2v:
+        if r1 > 0 or not self.valid_p2:
             print(r1)
-            print(self.p2v)
+            print(self.valid_p2)
             return "P1 wins"
-        elif r2 > 0 or not self.p1v:
+        elif r2 > 0 or not self.valid_p1:
             print(r2)
-            print(self.p1v)
+            print(self.valid_p1)
             return "P2 wins"
-        elif np.count_nonzero(self.l1 == 0) == 0:
+        elif np.count_nonzero(self.board == 0) == 0:
             return "Tie"
         else:
             return False
@@ -170,7 +174,7 @@ while play:
         if win_tf:
             stage = 3
         else:
-            g1.move1()
+            g1.move_game()
     for e in pg.event.get():
         if e.type == pg.QUIT:
             play = False
@@ -180,7 +184,7 @@ while play:
                 g1 = Game(pg_nr_dict[e.key])
                 stage = 2
             elif stage == 2:
-                g1.move1(pg_nr_dict[e.key])
+                g1.move_game(pg_nr_dict[e.key])
             elif stage == 3:
                 if pg_nr_dict[e.key] == 0:
                     play = False
@@ -189,22 +193,22 @@ while play:
         elif e.type == pg.MOUSEBUTTONDOWN and pg.mouse.get_pressed()[0]:
             if stage == 2:
                 mx, my = pg.mouse.get_pos()
-                g1.move1(mx // SQ)
+                g1.move_game(mx // SQ)
             pass
-    for x in range(C):  # Brett
+    for x in range(C):  # Draw board
         for y in range(R):
             pg.draw.circle(
                 screen, "#CDC0B4", (x * SQ + SQ // 2, y * SQ + SQ // 2), SQ // 3, 4
             )
-            if stage > 1:  # still shows the result
-                if g1.l1[y][x] == 1:
+            if stage > 1:  # shows result even it is finished
+                if g1.board[y][x] == 1:
                     pg.draw.circle(
                         screen,
                         (200, 0, 0),
                         (x * SQ + SQ // 2, y * SQ + SQ // 2),
                         SQ // 3,
                     )
-                if g1.l1[y][x] == 2:
+                if g1.board[y][x] == 2:
                     pg.draw.circle(
                         screen,
                         (0, 200, 200),
