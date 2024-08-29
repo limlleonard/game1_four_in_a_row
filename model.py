@@ -99,25 +99,29 @@ class Human:
 
 
 class Game:
-    def __init__(self, a1):
-        """Game has two players, p1 and p2. Board is a 2d np array, top row is row0"""
-        if a1 == 1:
+    def __init__(self, mode):
+        """Game has two players, p1 and p2. Board is a 2d np array, top row is row0. By default, moves from p1 and p2 are true. turn=true means p1 is in turn"""
+        # dct_human_robot={1:}
+        if mode == 1:
             self.p1 = Human(1)
             self.p2 = Human(2)
-        elif a1 == 2:
+        elif mode == 2:
             self.p1 = Human(1)
             self.p2 = Robot(2)
-        elif a1 == 3:
+        elif mode == 3:
             self.p1 = Robot(1)
             self.p2 = Human(2)
-        elif a1 == 4:
+        elif mode == 4:
             self.p1 = Robot(1)
             self.p2 = Robot(2)
         self.board = np.zeros((R, C), dtype=int)
         self.valid_p1 = self.valid_p2 = self.turn = True  # valid move
 
+    def add_to_board(self, pos, color):
+        return move1(self.board, pos, color)
+
     def move_game(self, a1=7):
-        """Move controlled by game. If turn is true, p1 is in turn"""
+        """Move controlled by game. If turn is true, p1 is in turn. With the default parameter, it is an invalid move"""
         if self.turn:
             mt = self.p1.move_player(self.board, a1)
             if mt in range(C):
@@ -133,7 +137,7 @@ class Game:
         if a1 != 7:
             pass
 
-    def move_control(self, a1=7):
+    def move_until_human(self, a1=7):
         """Keep moving until human input is needed"""
         done = False
         if not done:
@@ -149,8 +153,10 @@ class Game:
                     self.valid_p2 = move1(self.board, mt, self.p2.c)
                     self.turn = not self.turn
                     self.draw()
-            if (type(self.p1) is Human and self.turn) or (
-                type(self.p2) is Human and not self.turn
+            if (
+                (type(self.p1) is Human and self.turn)
+                or (type(self.p2) is Human and not self.turn)
+                or (self.winc())
             ):
                 done = True
 
@@ -170,7 +176,7 @@ class Game:
         elif np.count_nonzero(self.board == 0) == 0:
             return "Tie"
         else:
-            return False
+            return ""
 
     def draw(self):
         """Draw the board and pieces in Terminal"""
