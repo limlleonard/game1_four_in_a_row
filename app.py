@@ -10,6 +10,13 @@ pg_nr_dict = {
     pg.K_4: 4,
     pg.K_5: 5,
     pg.K_6: 6,
+    pg.K_KP0: 0,
+    pg.K_KP1: 1,
+    pg.K_KP2: 2,
+    pg.K_KP3: 3,
+    pg.K_KP4: 4,
+    pg.K_KP5: 5,
+    pg.K_KP6: 6,
 }
 start_text1 = "1: human vs human  2: human vs robot"
 start_text2 = "3: robot vs human  4: robot vs robot"

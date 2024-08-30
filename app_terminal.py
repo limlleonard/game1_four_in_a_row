@@ -1,4 +1,5 @@
 from model import *
+import time
 
 str_start = """
 Choose mode of the game and press 'Enter':
@@ -13,13 +14,17 @@ Press 'q' to quit.
 str_again = "Once again? (1/0)\n"
 stage = 1
 g1 = None
+first_time = True
 
 turn2nr = lambda x: 1 if x else 2
 
 
-def get_pos():
+def get_pos(first_time=True):
     while True:
-        pos = input(str_play)
+        if first_time:
+            pos = input(str_play)
+        else:
+            pos = input()
         if pos == "q":
             return "q"
         try:
@@ -48,23 +53,18 @@ while stage < 4:
         win_control = g1.winc()
         if len(win_control) == 0:
             g1.draw()
-            if g1.turn:
-                if type(g1.p1) is Robot:
-                    pos = g1.p1.move_player(g1.board)
-                else:
-                    pos = get_pos()
+            current_player = g1.p1 if g1.turn else g1.p2
+            if isinstance(current_player, Robot):
+                pos = current_player.move_player(g1.board)
+                time.sleep(2)
             else:
-                if type(g1.p2) is Robot:
-                    pos = g1.p2.move_player(g1.board)
-                else:
-                    pos = get_pos()
+                pos = get_pos(first_time)
+                first_time = False
             if pos == "q":
                 stage = 4
             else:
                 g1.add_to_board(pos, turn2nr(g1.turn))
                 g1.turn = not g1.turn
-
-            # nachteil: muss jedes mal kontrollieren, p1 ist Robot oder Mensch
         else:
             g1.draw()
             print(win_control + "\n")
@@ -73,5 +73,6 @@ while stage < 4:
         again = input(str_again)
         if again == "1":
             stage = 1
+            g1 = None
         elif again == "0":
             stage = 4
