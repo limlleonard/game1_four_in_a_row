@@ -19,6 +19,10 @@ This is a classic puzzle game. Two players play pieces of two colors in turn. Th
    ```bash
    python app.py
    ```
+   Alternatively, you could play the terminal version by running
+   ```bash
+   python app_terminal.py
+   ```
 
 ## Play
 
