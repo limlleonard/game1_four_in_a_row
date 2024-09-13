@@ -8,7 +8,7 @@ SQ = 80  # size of a square
 
 
 def count_windows(board, n=4, color=1):
-    """n: number in a line, c: color of the player. Count how many windows, which have n pieces of the selected color. A window indicate a row in horizontal, vertical or diagnol direction with a length of W=4"""
+    """n: number in a line, color: color of the player. The function counts how many windows, which have n pieces of the selected color. A window indicates a row in horizontal, vertical or diagnol direction with a length of W=4"""
     counter = 0
 
     def cw(l4):

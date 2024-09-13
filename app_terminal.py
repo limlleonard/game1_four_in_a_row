@@ -1,4 +1,4 @@
-from model import *
+from game import Robot, Human, Game, C
 import time
 
 str_start = """
@@ -51,12 +51,12 @@ while stage < 4:
         if g1 is None:
             g1 = Game(mode)
         win_control = g1.winc()
+        g1.draw()
         if len(win_control) == 0:
-            g1.draw()
             current_player = g1.p1 if g1.turn else g1.p2
             if isinstance(current_player, Robot):
                 pos = current_player.move_player(g1.board)
-                time.sleep(2)
+                time.sleep(1)
             else:
                 pos = get_pos(first_time)
                 first_time = False
@@ -66,7 +66,6 @@ while stage < 4:
                 g1.add_to_board(pos, turn2nr(g1.turn))
                 g1.turn = not g1.turn
         else:
-            g1.draw()
             print(win_control + "\n")
             stage = 3
     while stage == 3:

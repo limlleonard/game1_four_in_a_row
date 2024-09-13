@@ -1,5 +1,5 @@
 import pygame as pg
-from model import *
+from game import SQ, C, R, Game, Human, Robot
 
 play = True
 pg_nr_dict = {
