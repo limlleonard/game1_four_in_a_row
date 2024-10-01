@@ -16,10 +16,13 @@ stage = 1
 g1 = None
 first_time = True
 
-turn2nr = lambda x: 1 if x else 2
+turn2nr = lambda turn: (
+    1 if turn else 2
+)  # transform turn (t/f) to 1 or 2 to define the color of the piece
 
 
-def get_pos(first_time=True):
+def get_pos(first_time: bool = True):
+    """Get the input from the user. It is used to get the mode of the game when it is played for the first time or for the position of the next piece to play"""
     while True:
         if first_time:
             pos = input(str_play)

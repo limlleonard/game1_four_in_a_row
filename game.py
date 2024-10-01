@@ -7,11 +7,11 @@ W = 4  # number to win
 SQ = 80  # size of a square
 
 
-def count_windows(board, n=4, color=1):
+def count_windows(board, n=4, color=1) -> int:
     """n: number in a line, color: color of the player. The function counts how many windows, which have n pieces of the selected color. A window indicates a row in horizontal, vertical or diagnol direction with a length of W=4"""
     counter = 0
 
-    def cw(l4):
+    def cw(l4: int) -> int:
         """Check window, if there are n pieces of the selected color in the window and the rest is empty"""
         return list(l4).count(color) == n and list(l4).count(0) == W - n
 
@@ -37,7 +37,7 @@ def count_windows(board, n=4, color=1):
     return counter
 
 
-def move1(board, pos, color):
+def move1(board, pos: int, color: int) -> bool:
     """Drop a piece of the color to position, return true of false if the move is success (in case the column is already full). It checks from the bottom row, if it is empty, then places the piece where the first empty row appears"""
     for k1 in range(R):
         if not board[R - k1 - 1][pos]:
