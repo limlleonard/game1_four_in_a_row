@@ -1,5 +1,5 @@
 import pygame as pg
-from game import SQ, C, R, Game, Human, Robot
+from jetzt.g1_four.archive.game_old import SQ, C, R, Game, Human, Robot
 
 play = True
 pg_nr_dict = {

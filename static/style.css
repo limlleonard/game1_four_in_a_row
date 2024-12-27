@@ -1,0 +1,126 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+    /* border: 1px solid red; */
+    --diameter: 80px;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    /*vertical*/
+    justify-content: center;
+    /*horizontal*/
+    min-height: 100vh;
+    background: #444;
+    overflow: hidden;
+}
+.ctn0 {
+    display: flex;
+    background-color: #666;
+    /* overflow: hidden; */
+    text-align: center;
+    width: 100%;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1080px;
+}
+.ctn-l {
+    width: 400px;
+    height: 720px;
+    background-color: #888;
+    padding: 1em;
+}
+.ctn-l > * {
+    margin-bottom: 0.5em;
+}
+.ctn-select {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.ctn-select > * {
+    margin-bottom: 0.5em;
+}
+.ctn-select {
+    display: grid;
+    grid-template-columns: 30% 60%; /* Label takes 40%, select takes 60% */
+    gap: 0.5em 0; /* Add spacing between rows and columns */
+    align-items: center; /* Center content vertically within grid cells */
+}
+
+.ctn-select label {
+    text-align: left; /* Align text to the right for labels */
+}
+
+.ctn-select select {
+    width: 100%; /* Ensure the select elements take up full width of the cell */
+    padding: 0.3em; /* Optional: add padding for better appearance */
+    font-size: 1em;
+    background-color: #aaa;
+}
+.ctn-button {
+    display: flex;
+    gap: 0.5em;
+}
+button {
+    font-size: 1em;
+    border-radius: 0.5em;
+    height: 2em;
+    width: 100%;
+    background-color: #aaa;
+    align-self: center;
+}
+.ctn-l p {
+    text-align: left;
+}
+.ctn-r {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #888;
+    padding: 50px;
+}
+#board {
+    width: 700px;
+    height: 600px;
+    position:relative;
+    background-color: blue;
+    overflow: hidden;
+    display: flex;
+    grid-template-columns: auto auto auto auto auto auto auto;
+}
+.circle, .p1, .p2 {
+    width: var(--diameter);
+    height: var(--diameter);
+    position: absolute;
+    border-radius: 50%;
+}
+.circle {
+    background-color: lightgray;
+}
+.p1 {
+    background-color: red;
+}
+.p2 {
+    background-color: yellow;
+}
+.spalte {
+    width: 100%;
+    border: 1px solid black;
+    z-index: 1;
+}
+.spalte:hover {
+    background-color: lightpink;
+    opacity: 0.5;
+}
+.food {
+    background-color: green;
+}
+.head {
+    background-color: blue;
+}

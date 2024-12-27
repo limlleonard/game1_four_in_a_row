@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Four in a row</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}" />
+    <link rel="icon" href="../static/euch.png" type="image/x-icon">
+</head>
+
+<body>
+    <div class="ctn0">
+        <div class="ctn-l">
+            <h1>4 in 1 row</h1>
+            <div class="ctn-select">
+                <label for="mode">Mode: </label>
+                <select name="mode" id="mode">
+                    <option value="hh">Human vs. human</option>
+                    <option value="hr">Human vs. robot (human first)</option>
+                    <option value="rh">Robot vs. human</option>
+                    <option value="rr">Robot vs. robot</option>
+                </select>
+            </div>
+            <div class="ctn-button">
+                <button id="btn-start" onclick="start();">Start</button>
+                <button id="btn-reset" onclick="klicken('q');">Reset</button>
+            </div>
+            <p id="ergebnis"></p>
+        </div>
+        <div class="ctn-r">
+            <div class="board" id="board">
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
