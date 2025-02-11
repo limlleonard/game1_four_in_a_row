@@ -1,4 +1,3 @@
-
 * {
     margin: 0;
     padding: 0;
@@ -9,19 +8,18 @@
 }
 
 body {
+    margin: 0;
     display: flex;
     align-items: center;
     /*vertical*/
     justify-content: center;
     /*horizontal*/
     min-height: 100vh;
-    background: #444;
-    overflow: hidden;
+    background: #333;
 }
 .ctn0 {
     display: flex;
     background-color: #666;
-    /* overflow: hidden; */
     text-align: center;
     width: 100%;
     gap: 20px;

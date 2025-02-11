@@ -1,11 +1,9 @@
 # Four in a row
 
 ## Description
-
+[Link to open the blog](https://game1-four-in-a-row.onrender.com)
 This is a classic puzzle game. Two players play pieces of two colors in turn. The pieces would fall to the bottom. The one who make a row with four pieces wins.
-
-## Installation
-
+<!-- 
 1. Clone the repository and switch to the folder:
    ```bash
    git clone https://github.com/limlleonard/game1_four_in_a_row.git
@@ -22,8 +20,7 @@ This is a classic puzzle game. Two players play pieces of two colors in turn. Th
    Alternatively, you could play the terminal version by running
    ```bash
    python app_terminal.py
-   ```
-
+   ``` -->
 ## Play
 
 1. Select mode by clicking the number keys
