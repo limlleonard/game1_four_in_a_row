@@ -2,6 +2,7 @@
 
 ## Description
 [Link to open the blog](https://game1-four-in-a-row.onrender.com)
+
 This is a classic puzzle game. Two players play pieces of two colors in turn. The pieces would fall to the bottom. The one who make a row with four pieces wins.
 <!-- 
 1. Clone the repository and switch to the folder:
