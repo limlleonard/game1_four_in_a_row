@@ -41,6 +41,7 @@ class Game:
     def __init__(self):
         self.letzt_pos=None
         self.reset()
+        self.turn=True
     def reset(self):
         self.board = np.zeros((R, C), dtype=int)
         self.turn = True  # valid move
@@ -89,7 +90,7 @@ class Robot:
         self.p1=p1
 
     def reverse_board(self, board):
-        # robot should think he is always player 1. If he is player 2 infact, the board sent to him should be reversed
+        """robot should think he is always player 1. If he is player 2 infact, the board sent to him should be reversed"""
         board1=board.copy()
         for row in range(R):
             for col in range(C):
@@ -98,6 +99,7 @@ class Robot:
         return board1
     
     def move_fantacy(self, board, pos: int, color: int) -> bool:
+        """make a fantacy move to calculate score of the opponent"""
         for k1 in range(R):
             if not board[R - k1 - 1][pos]:
                 board[R - k1 - 1][pos] = color

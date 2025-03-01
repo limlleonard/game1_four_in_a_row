@@ -17,11 +17,13 @@ app.config['queue']=Queue()
 
 @app.route("/", methods=["GET"])
 def index():
+    """return home page"""
     return render_template("index.html")
 
 @app.route("/start", methods=["POST"])
 def start():
-    mode=request.json.get('mode')
+    """start playing game"""
+    mode=request.json.get('mode') # mögliche mode: hh, hr, rh, rr
     app.config['g1']=Game()
     app.config['r1']=Robot(True)
     app.config['r2']=Robot(False) # doesn't have to be used
@@ -34,7 +36,6 @@ def start():
 
 @app.route("/klicken", methods=["POST"])
 def klicken():
-    print(request.json.get('pos1'))
     if app.config['game_on']:
         pos1=request.json.get('pos1')
         app.config['queue'].put(pos1)
@@ -48,6 +49,8 @@ def game_loop(g1, r1, r2, p1, p2):
             pos1=app.config['queue'].get()
         elif p1=='r':
             pos1=r1.choose_pos(g1.board)
+        else:
+            break
         if pos1=='q':
             break
         legal=g1.move(pos1)
