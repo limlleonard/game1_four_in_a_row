@@ -1,5 +1,7 @@
 import random
 import numpy as np
+from queue import Queue
+import time
 
 R = 6  # total number of row
 C = 7  # total number of column
@@ -40,8 +42,13 @@ def count_windows(board, n=4, color=1) -> int:
 class Game:
     def __init__(self):
         self.letzt_pos=None
-        self.reset()
+        # self.reset()
+        self.board = np.zeros((R, C), dtype=int)
         self.turn=True
+
+        self.r1=Robot(True)
+        self.r2=Robot(False)
+
     def reset(self):
         self.board = np.zeros((R, C), dtype=int)
         self.turn = True  # valid move
@@ -84,6 +91,50 @@ class Game:
         else:
             return ""
         
+    def gloop(self, p1, p2, socketio, q1):
+        message=''
+        while True: # loop of game
+            # get a input from player 1
+            pos1=pos2=''
+            if p1=='h':
+                pos1=q1.get()
+            elif p1=='r':
+                pos1=self.r1.choose_pos(self.board)
+            else:
+                break
+            if pos1==9:
+                break
+            legal=self.move(pos1)
+            if not legal:
+                message='Player 1 played illegal move, player 2 wins'
+                break
+            self.draw()
+            socketio.emit('drop_info', {'pos1':self.letzt_pos, 'turn':self.turn})
+            message=self.win_check()
+            if len(message):
+                break
+            time.sleep(1)
+            # player 2
+            if p2=='h':
+                pos2=q1.get()
+            elif p2=='r':
+                pos2=self.r2.choose_pos(self.board)
+            else:
+                break
+            if pos2==9:
+                break
+            legal=self.move(pos2)
+            if not legal:
+                message='Player 2 played illegal move, player 1 wins'
+                break
+            self.draw()
+            socketio.emit('drop_info', {'pos1':self.letzt_pos, 'turn':self.turn})
+            message=self.win_check()
+            if len(message):
+                break
+            time.sleep(1)
+        socketio.emit('drop_info', {'message':message})
+
 class Robot:
     def __init__(self, p1=True):
         # if it is player1

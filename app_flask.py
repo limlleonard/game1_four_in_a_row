@@ -27,11 +27,22 @@ def start():
     app.config['g1']=Game()
     app.config['r1']=Robot(True)
     app.config['r2']=Robot(False) # doesn't have to be used
-    p1, p2=mode
-    app.config['thread']=Thread(target=game_loop, 
-                                args=(app.config['g1'], app.config['r1'], app.config['r2'], p1,p2))
-    app.config['thread'].start()
     app.config['game_on']=True
+    while not app.config['queue'].empty():
+        app.config['queue'].get()
+    g1=Game()
+    p1, p2=mode
+    app.config['thread']=Thread(target=g1.gloop,
+                                args=(p1,p2, socketio, app.config['queue']))
+    app.config['thread'].start()
+    return '', 204
+
+@app.route("/reset", methods=["POST"])
+def reset():
+    """queue hat ein bestimmtes Typ, deshalb put('q') funktioniert nicht, weil 'q' ist ein string typ
+    Ich vermute, wenn queue ist zum Erstmal eingefügt wird, wird der typ bestimmt"""
+    app.config['queue'].put(9)
+    app.config['game_on']=False
     return '', 204
 
 @app.route("/klicken", methods=["POST"])
@@ -40,49 +51,6 @@ def klicken():
         pos1=request.json.get('pos1')
         app.config['queue'].put(pos1)
     return '', 204
-
-def game_loop(g1, r1, r2, p1, p2):
-    message=''
-    while True: # loop of game
-        # get a input from player 1
-        if p1=='h':
-            pos1=app.config['queue'].get()
-        elif p1=='r':
-            pos1=r1.choose_pos(g1.board)
-        else:
-            break
-        if pos1=='q':
-            break
-        legal=g1.move(pos1)
-        if not legal:
-            message='Player 1 played illegal move, player 2 wins'
-            break
-        g1.draw()
-        socketio.emit('drop_info', {'pos1':g1.letzt_pos, 'turn':g1.turn})
-        message=g1.win_check()
-        if len(message):
-            break
-        time.sleep(1)
-        # player 2
-        if p2=='h':
-            pos1=app.config['queue'].get()
-        elif p2=='r':
-            pos1=r2.choose_pos(g1.board)
-        if pos1=='q':
-            break
-        legal=g1.move(pos1)
-        if not legal:
-            message='Player 2 played illegal move, player 1 wins'
-            break
-        g1.draw()
-        socketio.emit('drop_info', {'pos1':g1.letzt_pos, 'turn':g1.turn})
-        message=g1.win_check()
-        if len(message):
-            break
-        time.sleep(1)
-    app.config['game_on']=False
-    socketio.emit('drop_info', {'message':message})
-    # print(message)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, port=5001, host="0.0.0.0", allow_unsafe_werkzeug=True)
